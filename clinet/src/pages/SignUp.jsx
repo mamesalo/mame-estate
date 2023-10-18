@@ -29,10 +29,8 @@ export default function SignUp() {
         setError(data.message);
         return;
       }
-      if (error!=null){
-        setError(null);
-      }
       setLoading(false);
+      setError(null);
     } catch (error) {
       setError(error.message);
       setLoading(false);
