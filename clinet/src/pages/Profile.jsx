@@ -13,10 +13,13 @@ import {
   updateUserStart,
   updateUserSuccess,
   updateUserFailure,
+  deleteUserFailure,
+  deleteUserStart,
+  deleteUserSuccess,
 } from "../redux/user/userSlice";
 
 export default function Profile() {
-  const { currentUser,loading, error } = useSelector((state) => state.user);
+  const { currentUser, loading, error } = useSelector((state) => state.user);
   const fileRef = useRef(null);
   const [file, setFile] = useState(undefined);
   const [filePerc, setFilePerc] = useState(0);
@@ -25,7 +28,6 @@ export default function Profile() {
   const [updateSuccess, setUpdateSuccess] = useState(false);
   const dispatch = useDispatch();
 
-  
   useEffect(() => {
     if (file) {
       handleFileUpload(file);
@@ -79,6 +81,23 @@ export default function Profile() {
       setUpdateSuccess(true);
     } catch (error) {
       dispatch(updateUserFailure(error.message));
+    }
+  };
+
+  const handleDeleteUser = async () => {
+    try {
+      dispatch(deleteUserStart());
+      const res = await fetch(`/api/user/delete/${currentUser._id}`, {
+        method: 'DELETE',
+      });
+      const data = await res.json();
+      if (data.success === false) {
+        dispatch(deleteUserFailure(data.message));
+        return;
+      }
+      dispatch(deleteUserSuccess(data));
+    } catch (error) {
+      dispatch(deleteUserFailure(error.message));
     }
   };
 
@@ -142,20 +161,23 @@ export default function Profile() {
           className="bg-slate-700 text-white rounded-lg p-3 uppercase 
         hover:opacity-95 disabled:opacity-80 "
         >
-            {loading ? 'Loading...' : 'Update'}
+          {loading ? "Loading..." : "Update"}
         </button>
       </form>
       <div className="flex justify-between mt-5">
-        <span className="text-red-700 cursor-pointer hover:underline font-semibold ">
+        <span
+          onClick={handleDeleteUser}
+          className="text-red-700 cursor-pointer hover:underline font-semibold "
+        >
           Delete account
         </span>
         <span className="text-red-700 cursor-pointer hover:underline font-semibold">
           Sign Out
         </span>
       </div>
-      <p className='text-red-700 mt-5'>{error ? error : ''}</p>
-      <p className='text-green-700 mt-5'>
-        {updateSuccess ? 'User is updated successfully!' : ''}
+      <p className="text-red-700 mt-5">{error ? error : ""}</p>
+      <p className="text-green-700 mt-5">
+        {updateSuccess ? "User is updated successfully!" : ""}
       </p>
     </div>
   );
