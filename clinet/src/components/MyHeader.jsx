@@ -25,12 +25,19 @@ export default function MyHeader() {
   }, [location.search]);
   return (
     <header className="bg-slate-200 shadow-md">
-      <div className="flex justify-between items-center max-w-6xl mx-auto p-3">
+      <div className="flex justify-between items-center max-w-6xl mx-auto p-1s">
         <Link to="/">
-          <h1 className="font-bold text-sm sm:text-xl flex flex-wrap">
-            <span className="text-slate-500">Mame</span>
-            <span className="text-slate-700">Estate</span>
+          <div className="flex flex-wrap">
+          <img
+                className=" h-[70px] w-[70px]object-cover flex-wrap"
+                src="../images/logo.png"
+                alt="Logo"
+              />
+          <h1 className='hidden sm:block  font-bold text-sm sm:text-xl flex  flex-wrap self-center ml-2 '>
+            <span className='text-slate-500'>Elite Residential</span>
+            <span className='text-slate-700'>Solutions</span>
           </h1>
+          </div>
         </Link>
         <form
           onSubmit={handleSubmit}
