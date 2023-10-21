@@ -139,7 +139,7 @@ export default function Profile() {
   const handleListingDelete = async (listingId) => {
     try {
       const res = await fetch(`/api/listing/delete/${listingId}`, {
-        method: 'DELETE',
+        method: "DELETE",
       });
       const data = await res.json();
       if (data.success === false) {
@@ -154,7 +154,7 @@ export default function Profile() {
       console.log(error.message);
     }
   };
-  
+
   return (
     <div className="p-3 max-w-lg mx-auto">
       <h1 className="text-3xl font-semibold text-center my-7">Profile</h1>
@@ -171,7 +171,6 @@ export default function Profile() {
           className="rounded-full h-24 w-24 object-cover
           cursor-pointer self-center mt-2"
           src={formData.avatar || currentUser.avatar}
-          alt="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRkrIN_phrkQozJkBJi9v7jqOEazcPIad5SYA&usqp=CAU"
         />
         <p className="text-sm self-center font-semibold">
           {fileUploadError ? (
@@ -280,7 +279,9 @@ export default function Profile() {
                   Delete
                 </button>
                 <Link to={`/update-properties/${listing._id}`}>
-                  <button className="text-green-700 uppercase font-semibold">Edit</button>
+                  <button className="text-green-700 uppercase font-semibold">
+                    Edit
+                  </button>
                 </Link>
               </div>
             </div>
