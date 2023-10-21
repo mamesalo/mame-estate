@@ -33,9 +33,10 @@ export default function MyHeader() {
                 src="../images/logo.png"
                 alt="Logo"
               />
-          <h1 className='hidden sm:block  font-bold text-sm sm:text-xl flex  flex-wrap self-center ml-2 '>
-            <span className='text-slate-500'>Elite Residential</span>
-            <span className='text-slate-700'>Solutions</span>
+          <h1 className=' hidden sm:block md:block font-bold text-sm sm:text-xl  flex-wrap self-center ml-2 '>
+            <span className='text-slate-500 flex-wrap'>Elite Residential </span>
+            <span className='text-slate-700 flex-wrap'>Solutions</span>
+          
           </h1>
           </div>
         </Link>
