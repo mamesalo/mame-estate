@@ -2,7 +2,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import SignUp from "./pages/SignUp";
-import Profile from "./Pages/Profile";
 
 import MyHeader from "./components/MyHeader";
 import PrivateRoute from "./components/PrivateRoute";
@@ -13,6 +12,7 @@ import Search from "./pages/Search";
 import Home from "./pages/Home";
 import About from "./pages/About";
 import SignIn from "./Pages/SignIn";
+import Profile from "./pages/NewProfile";
 
 export default function App() {
   return (
@@ -25,9 +25,9 @@ export default function App() {
         <Route path="/properties/:propertyId" element={<Listing />} />
         <Route path="/search" element={<Search />} />
         <Route element={<PrivateRoute />}>
-          <Route path="/profile" element={<Profile />} />
           <Route path="/new-properties" element={<CreateListing />} />
           <Route path="/update-properties/:propertyId" element={<UpdateListing/>}/>
+          <Route path="/profile" element={<Profile/>}/>
         </Route>
         <Route path="/about" element={<About/>}/>
       </Routes>
