@@ -11,8 +11,8 @@ import Listing from "./pages/Listing";
 import Search from "./pages/Search";
 import Home from "./pages/Home";
 import About from "./pages/About";
-import SignIn from "./Pages/SignIn";
 import Profile from "./pages/NewProfile";
+import NewSignIn from "./pages/NewSignIn";
 
 export default function App() {
   return (
@@ -20,7 +20,7 @@ export default function App() {
       <MyHeader />
       <Routes>
         <Route path="/" element ={<Home/>}/>
-        <Route path="/sign-in" element={<SignIn/>}/>
+        <Route path="/" element ={<NewSignIn/>}/>
         <Route path="/sign-up" element={<SignUp />} />
         <Route path="/properties/:propertyId" element={<Listing />} />
         <Route path="/search" element={<Search />} />
