@@ -1,7 +1,6 @@
 // import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-import SignIn from "./Pages/SignIn";
 import SignUp from "./pages/SignUp";
 import Profile from "./Pages/Profile";
 
@@ -13,6 +12,7 @@ import Listing from "./pages/Listing";
 import Search from "./pages/Search";
 import Home from "./pages/Home";
 import About from "./pages/About";
+import SignIn from "./Pages/SignIn";
 
 export default function App() {
   return (
@@ -20,7 +20,7 @@ export default function App() {
       <MyHeader />
       <Routes>
         <Route path="/" element ={<Home/>}/>
-        <Route path="/sign-in" element={<SignIn />} />
+        <Route path="/sign-in" element={<SignIn/>}/>
         <Route path="/sign-up" element={<SignUp />} />
         <Route path="/properties/:propertyId" element={<Listing />} />
         <Route path="/search" element={<Search />} />
