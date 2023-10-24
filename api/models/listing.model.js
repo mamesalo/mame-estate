@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-
+//mongoose.Promise = global.Promise;
 const listingSchema = new mongoose.Schema(
   {
     name: {
@@ -59,5 +59,6 @@ const listingSchema = new mongoose.Schema(
 );
 
 const Listing = mongoose.model('Listing', listingSchema);
+console.log('listings model ',Listing.json);
 
 export default Listing;

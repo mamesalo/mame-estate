@@ -11,7 +11,6 @@ export default function Home() {
   const [saleListings, setSaleListings] = useState([]);
   const [rentListings, setRentListings] = useState([]);
   SwiperCore.use([Navigation]);
-  console.log(offerListings);
   useEffect(() => {
     const fetchOfferListings = async () => {
       try {
@@ -20,13 +19,13 @@ export default function Home() {
         setOfferListings(data);
         fetchRentListings();
       } catch (error) {
-        console.log(error);
       }
     };
     const fetchRentListings = async () => {
       try {
         const res = await fetch('/api/listing/get?type=rent&limit=4');
         const data = await res.json();
+
         setRentListings(data);
         fetchSaleListings();
       } catch (error) {
@@ -81,8 +80,10 @@ export default function Home() {
                 }}
                 className='h-[500px]'
                 key={listing._id}
-              ></div>
+              >
+              </div>
             </SwiperSlide>
+            
           ))}
       </Swiper>
 
@@ -124,7 +125,9 @@ export default function Home() {
             <div className='flex flex-wrap gap-4'>
               {saleListings.map((listing) => (
                 <ListingItem listing={listing} key={listing._id} />
+                
               ))}
+  
             </div>
           </div>
         )}
