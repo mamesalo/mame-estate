@@ -59,6 +59,5 @@ const listingSchema = new mongoose.Schema(
 );
 
 const Listing = mongoose.model('Listing', listingSchema);
-console.log('listings model ',Listing.json);
 
 export default Listing;
