@@ -1,9 +1,11 @@
-import express from "express";
+// import express from "express";
 import mongoose from "mongoose";
+import express from "express";
 import dotenv from "dotenv";
 import userRouter from "./routes/user.routes.js";
 import authRouter from "./routes/auth.routes.js";
 import listingRouter from "./routes/listing.routes.js";
+import { BlobServiceClient, ContainerClient } from "@azure/storage-blob";
 
 import cookieParser from "cookie-parser";
 import path from "path";
@@ -20,7 +22,23 @@ mongoose
     console.log(err);
   });
 
-const __dirname = path.resolve();
+// connect to azure storage account
+// const { BlobServiceClient } = require("@azure/storage-blob");
+const SASToken =
+  "sp=racwdli&st=2023-10-25T13:52:38Z&se=2023-11-29T21:52:38Z&sv=2022-11-02&sr=c&sig=Yv15cnoLVj%2FeAsboYULuX13WEckmsw%2FoN0z0chOcaxA%3D";
+const accountName = "phase2stor";
+const blobName = "homestor";
+try {
+  const blobServiceClient = new BlobServiceClient(
+    `https://${accountName}.blob.core.windows.net/?${SASToken}`
+  );
+  const ContainerClient = blobServiceClient.getContainerClient({ blobName });
+  console.log("connecting to azure storage account successfuly");
+} catch (error) {
+  console.log("Azure Storage Connection catch error=>>>>" + error.message);
+}
+//const __dirname = path.resolve();
+//const express = require("express");
 
 const app = express();
 

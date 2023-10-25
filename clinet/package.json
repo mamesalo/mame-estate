@@ -10,6 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@azure/identity": "^3.3.2",
+    "@azure/storage-blob": "^12.16.0",
     "@reduxjs/toolkit": "^1.9.7",
     "firebase": "^10.5.0",
     "mame_estate": "file:..",
