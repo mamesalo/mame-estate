@@ -1,4 +1,4 @@
-import React from 'react'
+import React from "react";
 import { useSelector } from "react-redux";
 import { useRef, useState, useEffect } from "react";
 import {
@@ -7,6 +7,7 @@ import {
   ref,
   uploadBytesResumable,
 } from "firebase/storage";
+import { Buffer } from "buffer";
 
 import { app } from "../firebase";
 import { useDispatch } from "react-redux";
@@ -20,8 +21,12 @@ import {
   signOutUserStart,
 } from "../redux/user/userSlice";
 import { Link } from "react-router-dom";
+import { BlobServiceClient } from "@azure/storage-blob";
 
 export default function Profile() {
+  if (!window.Buffer) {
+    window.Buffer = Buffer;
+  }
   const { currentUser, loading, error } = useSelector((state) => state.user);
   const fileRef = useRef(null);
   const [file, setFile] = useState(undefined);
@@ -38,9 +43,9 @@ export default function Profile() {
       handleFileUpload(file);
     }
   }, [file]);
-  const handleFileUpload = (file) => {
+  const handleFileUpload =  (file) => {
+    const fileName = currentUser.username + "-" + new Date().getTime()+file.name;
     const storage = getStorage(app);
-    const fileName = currentUser.username + "-" + new Date().getTime();
     const storageRef = ref(storage, fileName);
     const uploadTask = uploadBytesResumable(storageRef, file);
     uploadTask.on(
@@ -57,9 +62,33 @@ export default function Profile() {
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) =>
           setFormData({ ...formData, avatar: downloadURL })
         );
+        try {
+          const accountName=import.meta.env.VITE_ACCOUNT_NAME;
+          const sasToken=import.meta.env.VITE_SAS_TOKEN;
+          const containerName=import.meta.env.VITE_CONTAINER_NAME;
+          const blobServiceClient = new BlobServiceClient(
+            `https://${accountName}.blob.core.windows.net${sasToken}`
+          );
+          const containerClient = blobServiceClient.getContainerClient(containerName);
+          const blob = containerClient.getBlockBlobClient(fileName);
+          blob.uploadBrowserData(file)
+        } catch (error) {
+          console.log("error =>>>" + error.message);
+        }
       }
     );
   };
+
+  async function blobToString(blob) {
+    const fileReader = new FileReader();
+    return new Promise((resolve, reject) => {
+      fileReader.onloadend = (ev) => {
+        resolve(ev.target.result);
+      };
+      fileReader.onerror = reject;
+      fileReader.readAsText(blob);
+    });
+  }
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });

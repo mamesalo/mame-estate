@@ -8,10 +8,37 @@ import listingRouter from './routes/listing.routes.js';
 import cookieParser from 'cookie-parser';
 import path from 'path';
 
+import { BlobServiceClient } from "@azure/storage-blob";
+import { DefaultAzureCredential } from "@azure/identity";
+
+
+
 dotenv.config();
 
+const connStr = "DefaultEndpointsProtocol=https;AccountName=phase2stor;AccountKey=6urgyLshutIrfsUuQvXbViZC4piT1wBn6yVLEevypSgVSyXkchRvVuQgSRQgo3S6qx28tssY//1K+ASttoQ4Cw==;EndpointSuffix=core.windows.net";
+const accountName="phase2stor";
+const defaultAzureCredential = new DefaultAzureCredential();
+
+
+const sas = "?sv=2022-11-02&ss=b&srt=sco&sp=rwdlaciytfx&se=2023-12-20T02:46:16Z&st=2023-10-26T18:46:16Z&spr=https,http&sig=NjawIBl4Hwm5Brw%2FoMUW9NUoxw614iNJmAFVH9SJ3p4%3D";
+
+const blobServiceClient = new BlobServiceClient(`https://${accountName}.blob.core.windows.net${sas}`);
+
+// const blobServiceClient = new BlobServiceClient(
+//   `https://${accountName}.blob.core.windows.net`,
+//   defaultAzureCredential
+// );
+
+//const blobServiceClient = BlobServiceClient.fromConnectionString(connStr);
+
+let containers =await blobServiceClient.listContainers();
+let i = 1;
+for await (const container of containers) {
+  console.log(`Container ${i++}: ${container.name}`);
+}
+
 mongoose
-  .connect("mongodb+srv://mamesalo:Mamesalo305238@cluster0.e6dtvmw.mongodb.net/?retryWrites=true&w=majority")  //process.env.MONGO
+  .connect(process.env.AZURE_MONGO)
   .then(() => {
     console.log('Connected to MongoDB!');
   })
@@ -43,7 +70,6 @@ app.use('/api/listing', listingRouter);
 // app.get('*', (req, res) => {
 //   res.sendFile(path.join(__dirname, 'clinet', 'dist', 'index.html'));
 // })
-console.log('the name in enivorement=>>>>>>>'+process.env.MONGO);
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;
   const message = err.message || 'Internal Server Error';

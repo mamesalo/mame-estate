@@ -6,13 +6,15 @@
   "type": "module",
   "scripts": {
     "dev": "nodemon api/index.js",
-    "start": "npm install && npm install --prefix clinet && npm run build --prefix clinet && node api/index.js",
+    "start": "node api/index.js",
     "build": "npm install && npm install --prefix clinet && npm run build --prefix clinet"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@azure/identity": "^3.3.2",
+    "@azure/storage-blob": "^12.16.0",
     "bcrypt": "^5.1.1",
     "cookie-parser": "^1.4.6",
     "dotenv": "^16.3.1",
