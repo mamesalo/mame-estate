@@ -5,16 +5,19 @@ import dotenv from "dotenv";
 import userRouter from "./routes/user.routes.js";
 import authRouter from "./routes/auth.routes.js";
 import listingRouter from "./routes/listing.routes.js";
-import { BlobServiceClient, ContainerClient } from "@azure/storage-blob";
+import {
+  BlobServiceClient,
+  StorageSharedKeyCredential,
+} from "@azure/storage-blob";
 
 import cookieParser from "cookie-parser";
-import path from "path";
+import fs from "fs";
 
 dotenv.config();
 
 //mongoose.Promise = global.Promise;
 mongoose
-  .connect(process.env.AZURE_MONGO) //MONGO  AZURE_MONGO
+  .connect("mongodb://phase2mongodb:Nubmsu2S8eq1y149NT6f7nqlrnLjBVkviaEUxDuGa7sCRnogS7mCFUAQWNyg0jvOZI3eeR1uTCNIACDbpS7RDQ==@phase2mongodb.mongo.cosmos.azure.com:10255/?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000&appName=@phase2mongodb@") //MONGO  AZURE_MONGO   process.env.AZURE_MONGO
   .then(() => {
     console.log("Connected to Cosmos MongoDB!");
   })
@@ -23,23 +26,28 @@ mongoose
   });
 
 // connect to azure storage account
-// const { BlobServiceClient } = require("@azure/storage-blob");
-const SASToken =
-  "sp=racwdli&st=2023-10-25T13:52:38Z&se=2023-11-29T21:52:38Z&sv=2022-11-02&sr=c&sig=Yv15cnoLVj%2FeAsboYULuX13WEckmsw%2FoN0z0chOcaxA%3D";
+
 const accountName = "phase2stor";
-const blobName = "homestor";
+const containerName = "homestor";
+
+const sharedKeyCredential = new StorageSharedKeyCredential(
+  accountName,
+  "6urgyLshutIrfsUuQvXbViZC4piT1wBn6yVLEevypSgVSyXkchRvVuQgSRQgo3S6qx28tssY//1K+ASttoQ4Cw==" //process.env.ACCOUNT_KEY
+);
+
 try {
   const blobServiceClient = new BlobServiceClient(
-    `https://${accountName}.blob.core.windows.net/?${SASToken}`
+    `https://${accountName}.blob.core.windows.net`,
+    sharedKeyCredential
   );
-  const ContainerClient = blobServiceClient.getContainerClient({ blobName });
-  console.log("connecting to azure storage account successfuly");
-} catch (error) {
-  console.log("Azure Storage Connection catch error=>>>>" + error.message);
-}
-//const __dirname = path.resolve();
-//const express = require("express");
+  const containerClient = blobServiceClient.getContainerClient(containerName);
 
+  const blockBlobClient = containerClient.getBlockBlobClient("pic5.jpg");
+  const uploadBlobResponse = await blockBlobClient.uploadFile(
+    "C:\\Users\\mames\\Desktop\\New folder\\pic.jpg"
+  );
+  console.log("blob added succesfully");
+} catch (error) {}
 const app = express();
 
 app.use(express.json());
@@ -53,12 +61,6 @@ app.listen(3000, () => {
 app.use("/api/user", userRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/listing", listingRouter);
-
-// app.use(express.static(path.join(__dirname, "/clinet/dist")));
-
-// app.get("*", (req, res) => {
-//   res.sendFile(path.join(__dirname, "clinet", "dist", "index.html"));
-// });
 
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;
