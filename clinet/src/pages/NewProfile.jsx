@@ -1,4 +1,4 @@
-import React from 'react'
+import React from "react";
 import { useSelector } from "react-redux";
 import { useRef, useState, useEffect } from "react";
 import {
@@ -9,6 +9,8 @@ import {
 } from "firebase/storage";
 
 import { app } from "../firebase";
+import { BlobServiceClient } from "@azure/storage-blob";
+
 import { useDispatch } from "react-redux";
 import {
   updateUserStart,
@@ -19,14 +21,20 @@ import {
   deleteUserSuccess,
   signOutUserStart,
 } from "../redux/user/userSlice";
+
 import { Link } from "react-router-dom";
 
 export default function Profile() {
   const { currentUser, loading, error } = useSelector((state) => state.user);
   const fileRef = useRef(null);
   const [file, setFile] = useState(undefined);
+
   const [filePerc, setFilePerc] = useState(0);
+  const [azurefilePerc, setAzureFilePerc] = useState(0);
+
   const [fileUploadError, setFileUploadError] = useState(false);
+  const [azurefileUploadError, setAzureFileUploadError] = useState(false);
+
   const [formData, setFormData] = useState({});
   const [updateSuccess, setUpdateSuccess] = useState(false);
   const [showListingsError, setShowListingsError] = useState(false);
@@ -38,7 +46,48 @@ export default function Profile() {
       handleFileUpload(file);
     }
   }, [file]);
+  // const handleFileUpload = (file) => {
+  //   const accountName = "phase2stor";
+  //   const containerName = "homestor";
+
+  //   const storage = getStorage(app);
+  //   const fileName = currentUser.username + "-" + new Date().getTime();
+  //   const storageRef = ref(storage, fileName);
+  //   // console.log(file);
+
+  //   // try {
+  //   //   const blobServiceClient = BlobServiceClient.fromConnectionString(
+  //   //     import.meta.env.CONNECTION_STRING
+  //   //   );
+  //   //   const containerClient =
+  //   //     blobServiceClient.getContainerClient(containerName);
+  //   //  // blockBlobClient.uploadBrowserData(file[0]);
+  //   //   console.log("done from try to blob");
+  //   // } catch (error) {
+  //   //   console.log("the ereeo =>>" + error.message);
+  //   // }
+
+  //   uploadTask.on(
+  //     "state_changed",
+  //     (snapshot) => {
+  //       const progress =
+  //         (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+  //       setFilePerc(Math.round(progress));
+  //     },
+  //     (error) => {
+  //       setFileUploadError(true);
+  //     },
+  //     () => {
+  //       getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) =>
+  //         setFormData({ ...formData, avatar: downloadURL })
+  //       );
+  //     }
+  //   );
+  // };
+
+
   const handleFileUpload = (file) => {
+    
     const storage = getStorage(app);
     const fileName = currentUser.username + "-" + new Date().getTime();
     const storageRef = ref(storage, fileName);
@@ -60,6 +109,7 @@ export default function Profile() {
       }
     );
   };
+
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
@@ -188,6 +238,25 @@ export default function Profile() {
             ""
           )}
         </p>
+
+        {/* this for azure blob */}
+        <p className="text-sm self-center font-semibold">
+          {azurefileUploadError ? (
+            <span className="text-red-700 font-semibold">
+              Error Image upload (image must be less than 4 mb)
+            </span>
+          ) : azurefilePerc > 0 && azurefilePerc < 100 ? (
+            <span className="text-blue-700 font-semibold">{`Uploading ${azurefilePerc}%`}</span>
+          ) : azurefilePerc === 100 ? (
+            <span className="text-green-700 font-semibold">
+              Image successfully uploaded!
+            </span>
+          ) : (
+            ""
+          )}
+        </p>
+        {/* this for azure blob */}
+
         <input
           type="text"
           placeholder="username"
