@@ -32,7 +32,7 @@ const containerName = "homestor";
 
 const sharedKeyCredential = new StorageSharedKeyCredential(
   accountName,
-  "6urgyLshutIrfsUuQvXbViZC4piT1wBn6yVLEevypSgVSyXkchRvVuQgSRQgo3S6qx28tssY//1K+ASttoQ4Cw==" //process.env.ACCOUNT_KEY
+  "6urgyLshutIrfsUuQvXbViZC4piT1wBn6yVLEevypSgVSyXkchRvVuQgSRQgo3S6qx28tssY//1K+ASttoQ4Cw==" //process.env.ACCOUNT_KEY me
 );
 
 try {
