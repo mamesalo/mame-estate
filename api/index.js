@@ -15,27 +15,7 @@ import { DefaultAzureCredential } from "@azure/identity";
 
 dotenv.config();
 
-const connStr = "DefaultEndpointsProtocol=https;AccountName=phase2stor;AccountKey=6urgyLshutIrfsUuQvXbViZC4piT1wBn6yVLEevypSgVSyXkchRvVuQgSRQgo3S6qx28tssY//1K+ASttoQ4Cw==;EndpointSuffix=core.windows.net";
-const accountName="phase2stor";
-const defaultAzureCredential = new DefaultAzureCredential();
 
-
-const sas = "?sv=2022-11-02&ss=b&srt=sco&sp=rwdlaciytfx&se=2023-12-20T02:46:16Z&st=2023-10-26T18:46:16Z&spr=https,http&sig=NjawIBl4Hwm5Brw%2FoMUW9NUoxw614iNJmAFVH9SJ3p4%3D";
-
-const blobServiceClient = new BlobServiceClient(`https://${accountName}.blob.core.windows.net${sas}`);
-
-// const blobServiceClient = new BlobServiceClient(
-//   `https://${accountName}.blob.core.windows.net`,
-//   defaultAzureCredential
-// );
-
-//const blobServiceClient = BlobServiceClient.fromConnectionString(connStr);
-
-let containers =await blobServiceClient.listContainers();
-let i = 1;
-for await (const container of containers) {
-  console.log(`Container ${i++}: ${container.name}`);
-}
 
 mongoose
   .connect(process.env.AZURE_MONGO)
