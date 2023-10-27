@@ -58,5 +58,5 @@ jobs:
         with:
           app-name: 'elite-estate'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_1151FF5FF8FE4D95A8A045741F6E82EC }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_CB50214108B24C57A3D36EE98EECB665 }}
           package: .
