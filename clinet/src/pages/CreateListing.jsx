@@ -9,8 +9,13 @@ import {
 import { app } from "../firebase";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { BlobServiceClient } from "@azure/storage-blob";
+import { Buffer } from "buffer";
 
 export default function CreateListing() {
+  if (!window.Buffer) {
+    window.Buffer = Buffer;
+  }
   const { currentUser } = useSelector((state) => state.user);
   const navigate = useNavigate();
   const [files, setFiles] = useState([]);
@@ -32,12 +37,13 @@ export default function CreateListing() {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
-  
+
   const handleImageSubmit = (e) => {
     if (files.length > 0 && files.length + formData.imageUrls.length < 7) {
       setUploading(true);
       setImageUploadError(false);
       const promises = [];
+      const promises2 = [];
 
       for (let i = 0; i < files.length; i++) {
         promises.push(storeImage(files[i]));
@@ -50,6 +56,28 @@ export default function CreateListing() {
           });
           setImageUploadError(false);
           setUploading(false);
+          try {
+            const accountName = import.meta.env.VITE_ACCOUNT_NAME;
+            const sasToken = import.meta.env.VITE_SAS_TOKEN;
+            const containerName = import.meta.env.VITE_CONTAINER_NAME;
+            const blobServiceClient = new BlobServiceClient(
+              `https://${accountName}.blob.core.windows.net${sasToken}`
+            );
+            const containerClient =
+              blobServiceClient.getContainerClient(containerName);
+
+            for (let x = 0; x < files.length; x++) {
+              const blob = containerClient.getBlockBlobClient(files[x].name);
+              promises2.push(blob.uploadBrowserData(files[x]));
+            }
+            Promise.all(promises2)
+            .catch((error)=>{
+              console.log("error while uploading to azure storage=>>>" + error.message);
+
+            });
+          } catch (e) {
+            console.log("error =>>>" + e.message);
+          }
         })
         .catch((err) => {
           setImageUploadError("Image upload failed (2 mb max per image)");
@@ -72,7 +100,6 @@ export default function CreateListing() {
         (snapshot) => {
           const progress =
             (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          
         },
         (error) => {
           reject(error);
@@ -156,9 +183,7 @@ export default function CreateListing() {
   };
   return (
     <main className="p-3 max-w-4xl mx-auto">
-      <h1 className="text-3xl font-semibold text-center my-7">
-      New Property
-      </h1>
+      <h1 className="text-3xl font-semibold text-center my-7">New Property</h1>
       <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-4">
         <div className="flex flex-col gap-4 flex-1">
           <input
