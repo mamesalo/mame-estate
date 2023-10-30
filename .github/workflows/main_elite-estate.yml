@@ -59,4 +59,4 @@ jobs:
           app-name: 'elite-estate'
           slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_4DDE28124E864C17AD50DCD140C9B573 }}
-          package: ./clinet/dist
+          package: .
