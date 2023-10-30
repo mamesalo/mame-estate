@@ -20,7 +20,7 @@ dotenv.config();
 mongoose
   .connect(process.env.AZURE_MONGO)
   .then(() => {
-    console.log('Connected to MongoDB!');
+    console.log('Connected to azure MongoDB!');
   })
   .catch((err) => {
     console.log(err);
