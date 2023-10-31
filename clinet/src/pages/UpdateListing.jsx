@@ -8,6 +8,7 @@ import {
 import { app } from '../firebase';
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
+import { BlobServiceClient } from "@azure/storage-blob";
 
 export default function CreateListing() {
   const { currentUser } = useSelector((state) => state.user);
@@ -54,6 +55,7 @@ export default function CreateListing() {
       setUploading(true);
       setImageUploadError(false);
       const promises = [];
+      const promises2 = [];
 
       for (let i = 0; i < files.length; i++) {
         promises.push(storeImage(files[i]));
@@ -66,6 +68,31 @@ export default function CreateListing() {
           });
           setImageUploadError(false);
           setUploading(false);
+
+
+          try {
+            const accountName = import.meta.env.VITE_ACCOUNT_NAME;
+            const sasToken = import.meta.env.VITE_SAS_TOKEN;
+            const containerName = import.meta.env.VITE_CONTAINER_NAME;
+            const blobServiceClient = new BlobServiceClient(
+              `https://${accountName}.blob.core.windows.net${sasToken}`
+            );
+            const containerClient =
+              blobServiceClient.getContainerClient(containerName);
+
+            for (let x = 0; x < files.length; x++) {
+              const blob = containerClient.getBlockBlobClient(files[x].name);
+              promises2.push(blob.uploadBrowserData(files[x]));
+            }
+            Promise.all(promises2)
+            .catch((error)=>{
+              console.log("error while uploading to azure storage=>>>" + error.message);
+
+            });
+          } catch (e) {
+            console.log("error =>>>" + e.message);
+          }
+
         })
         .catch((err) => {
           setImageUploadError('Image upload failed (2 mb max per image)');

@@ -10,6 +10,7 @@ import {
 
 import { app } from "../firebase";
 import { useDispatch } from "react-redux";
+import { BlobServiceClient } from "@azure/storage-blob";
 import {
   updateUserStart,
   updateUserSuccess,
@@ -40,7 +41,7 @@ export default function Profile() {
   }, [file]);
   const handleFileUpload = (file) => {
     const storage = getStorage(app);
-    const fileName = currentUser.username + "-" + new Date().getTime();
+    const fileName = currentUser.username + "-" + new Date().getTime()+file.name;
     const storageRef = ref(storage, fileName);
     const uploadTask = uploadBytesResumable(storageRef, file);
     uploadTask.on(
@@ -57,6 +58,22 @@ export default function Profile() {
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) =>
           setFormData({ ...formData, avatar: downloadURL })
         );
+
+        try {
+          const accountName=import.meta.env.VITE_ACCOUNT_NAME;
+          const sasToken=import.meta.env.VITE_SAS_TOKEN;
+          const containerName=import.meta.env.VITE_CONTAINER_NAME;
+          const blobServiceClient = new BlobServiceClient(
+            `https://${accountName}.blob.core.windows.net${sasToken}`
+          );
+          const containerClient = blobServiceClient.getContainerClient(containerName);
+          const blob = containerClient.getBlockBlobClient(fileName);
+          blob.uploadBrowserData(file)
+        } catch (error) {
+          console.log("error =>>>" + error.message);
+        }
+
+
       }
     );
   };
