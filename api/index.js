@@ -6,7 +6,7 @@ import authRouter from "./routes/auth.routes.js";
 import listingRouter from "./routes/listing.routes.js";
 import cookieParser from "cookie-parser";
 import path from "path";
-
+ 
 dotenv.config(); 
 
 mongoose.Promise = global.Promise;
