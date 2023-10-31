@@ -5,13 +5,9 @@ import dotenv from "dotenv";
 import userRouter from "./routes/user.routes.js";
 import authRouter from "./routes/auth.routes.js";
 import listingRouter from "./routes/listing.routes.js";
-import {
-  BlobServiceClient,
-  StorageSharedKeyCredential,
-} from "@azure/storage-blob";
 
 import cookieParser from "cookie-parser";
-import fs from "fs";
+
 
 dotenv.config();
 
