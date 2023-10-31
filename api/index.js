@@ -11,9 +11,9 @@ dotenv.config();
 
 mongoose.Promise = global.Promise;
 mongoose
-  .connect(process.env.MONGO)
+  .connect(process.env.AZURE_MONGO)
   .then(() => {
-    console.log("Connected to MongoDB!");
+    console.log("Connected to Cosmos MongoDB!");
   })
   .catch((err) => {
     console.log(err);
