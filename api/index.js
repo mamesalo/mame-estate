@@ -17,7 +17,7 @@ dotenv.config();
 
 //mongoose.Promise = global.Promise;
 mongoose
-  .connect("mongodb://phase2mongodb:Nubmsu2S8eq1y149NT6f7nqlrnLjBVkviaEUxDuGa7sCRnogS7mCFUAQWNyg0jvOZI3eeR1uTCNIACDbpS7RDQ==@phase2mongodb.mongo.cosmos.azure.com:10255/?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000&appName=@phase2mongodb@") //MONGO  AZURE_MONGO   process.env.AZURE_MONGO
+  .connect(process.env.AZURE_MONGO) //MONGO  AZURE_MONGO   process.env.AZURE_MONGO
   .then(() => {
     console.log("Connected to Cosmos MongoDB!");
   })
@@ -25,42 +25,30 @@ mongoose
     console.log(err);
   });
 
-// connect to azure storage account
+const __dirname = path.resolve();
 
-const accountName = "phase2stor";
-const containerName = "homestor";
-
-const sharedKeyCredential = new StorageSharedKeyCredential(
-  accountName,
-  "6urgyLshutIrfsUuQvXbViZC4piT1wBn6yVLEevypSgVSyXkchRvVuQgSRQgo3S6qx28tssY//1K+ASttoQ4Cw==" //process.env.ACCOUNT_KEY me
-);
-
-try {
-  const blobServiceClient = new BlobServiceClient(
-    `https://${accountName}.blob.core.windows.net`,
-    sharedKeyCredential
-  );
-  const containerClient = blobServiceClient.getContainerClient(containerName);
-
-  const blockBlobClient = containerClient.getBlockBlobClient("pic5.jpg");
-  const uploadBlobResponse = await blockBlobClient.uploadFile(
-    "C:\\Users\\mames\\Desktop\\New folder\\pic.jpg"
-  );
-  console.log("blob added succesfully");
-} catch (error) {}
 const app = express();
 
 app.use(express.json());
 
 app.use(cookieParser());
 
-app.listen(3000, () => {
-  console.log("Server is running on port 3000!");
+app.set('port', process.env.PORT || 3000);
+
+app.listen(app.get('port'), () => {
+  console.log("Server is running on port ");
 });
 
 app.use("/api/user", userRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/listing", listingRouter);
+
+
+ app.use(express.static(path.join(__dirname, "/clinet/dist")));
+
+ app.get("*", (req, res) => {
+   res.sendFile(path.join(__dirname, "clinet", "dist", "index.html"));
+ });
 
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;
