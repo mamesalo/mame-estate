@@ -7,7 +7,7 @@ import listingRouter from "./routes/listing.routes.js";
 import cookieParser from "cookie-parser";
 import path from "path";
 
-dotenv.config();
+dotenv.config(); 
 
 mongoose.Promise = global.Promise;
 mongoose
